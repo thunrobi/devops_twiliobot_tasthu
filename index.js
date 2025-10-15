@@ -45,12 +45,17 @@ app.post("/answer", (req, res) => {
     twiml.say("No active question. Press 1 to start.").redirect("/voice");
   } else {
     twiml.say(answer === currentQuestion.correct ? "Correct!" : "Incorrect.");
-    twiml.say("Press 1 to try another question.").redirect("/voice");
+    twiml.say("Press 1 to try another question.");
+    twiml.redirect("/voice"); 
     currentQuestion = null;
   }
 
   sendTwiML(res, twiml);
 });
 
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Trivia bot running on port ${PORT}`));
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Trivia bot running on port ${PORT}`));
+}
+module.exports = app;
