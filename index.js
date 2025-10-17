@@ -1,9 +1,12 @@
 const express = require("express");
 const { VoiceResponse } = require("twilio").twiml;
+const cors = require("cors");
+
+
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
-
+app.use(cors());
 const QUESTIONS = [
   { q: "What planet is known as the Red Planet? Press 1 for Venus, 2 for Mars, 3 for Jupiter.", correct: "2" },
   { q: "How many continents are there? Press 1 for six, 2 for eight, 3 for seven.", correct: "3" },
@@ -13,7 +16,9 @@ const QUESTIONS = [
 let currentQuestion = null;
 
 const sendTwiML = (res, twiml) => res.type("text/xml").send(twiml.toString());
-
+app.get("/", (req, res) => {
+  res.send("Twilio Trivia Bot is running 🚀");
+});
 // Main menu — start or replay
 app.post("/voice", (req, res) => {
   const twiml = new VoiceResponse();
@@ -46,7 +51,7 @@ app.post("/answer", (req, res) => {
   } else {
     twiml.say(answer === currentQuestion.correct ? "Correct!" : "Incorrect.");
     twiml.say("Press 1 to try another question.");
-    twiml.redirect("/voice"); 
+    twiml.redirect("/voice");
     currentQuestion = null;
   }
 
