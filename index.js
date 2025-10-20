@@ -25,9 +25,9 @@ app.post("/voice", (req, res) => {
   const twiml = new VoiceResponse();
   const gather = twiml.gather({ numDigits: 1, action: "/menu", method: "POST" });
   gather.say("Welcome to the Twilio Trivia Challenge! Press 1 to start a question.");
-  twiml.redirect("/voice");
   sendTwiML(res, twiml);
 });
+
 
 
 app.post("/menu", (req, res) => {
