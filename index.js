@@ -6,6 +6,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
+
 const BASE_URL = process.env.BASE_URL || "https://devops-twiliobot-tasthu-1.onrender.com";
 
 const QUESTIONS = [
@@ -20,9 +21,11 @@ const sendTwiML = (res, twiml) => {
   res.type("text/xml").send(twiml.toString());
 };
 
+
 app.get("/", (req, res) => {
   res.send("Twilio Trivia Bot is running");
 });
+
 
 app.post("/voice", (req, res) => {
   const twiml = new VoiceResponse();
@@ -31,16 +34,17 @@ app.post("/voice", (req, res) => {
     action: `${BASE_URL}/menu`,
     method: "POST",
   });
+
   gather.say("Welcome to the Twilio Trivia Challenge! Press 1 to start a question.");
   sendTwiML(res, twiml);
 });
 
-app.post("/menu", (req, res) => {
-  const twiml = new VoiceResponse();
-  const digits = req.body.Digits;
-  console.log("Menu digits:", req.body);
 
-  if (digits === "1") {
+app.post("/menu", (req, res) => {
+  console.log("Menu digits:", req.body);
+  const twiml = new VoiceResponse();
+
+  if (req.body.Digits === "1") {
     currentQuestion = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
     const gather = twiml.gather({
       numDigits: 1,
@@ -56,10 +60,11 @@ app.post("/menu", (req, res) => {
   sendTwiML(res, twiml);
 });
 
+
 app.post("/answer", (req, res) => {
+  console.log("Answer digits:", req.body);
   const twiml = new VoiceResponse();
   const answer = req.body.Digits;
-  console.log("Answer digits:", req.body);
 
   if (!currentQuestion) {
     twiml.say("No active question. Press 1 to start.");
@@ -75,18 +80,16 @@ app.post("/answer", (req, res) => {
   sendTwiML(res, twiml);
 });
 
-const resetTrivia = () => {
-  currentQuestion = null;
-};
 
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res.status(500).send("Internal Server Error");
 });
 
+
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
   app.listen(PORT, () => console.log(`Trivia bot running on port ${PORT}`));
 }
 
-module.exports = { app, resetTrivia };
+module.exports = { app };
