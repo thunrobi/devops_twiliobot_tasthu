@@ -54,7 +54,7 @@ app.post("/menu", (req, res) => {
     gather.say(currentQuestion.q);
   } else {
     twiml.say("Invalid choice. Press 1 to start a question.");
-    twiml.redirect(`${BASE_URL}/menu`);
+    twiml.redirect(`${BASE_URL}/voice`);
   }
 
   sendTwiML(res, twiml);
@@ -73,7 +73,7 @@ app.post("/answer", (req, res) => {
     const correct = answer === currentQuestion.correct;
     twiml.say(correct ? "Correct!" : "Incorrect.");
     twiml.say("Press 1 to try another question.");
-    twiml.redirect(`${BASE_URL}/menu`);
+    twiml.redirect(`${BASE_URL}/voice`);
     currentQuestion = null;
   }
 
