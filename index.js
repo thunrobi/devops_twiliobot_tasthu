@@ -54,7 +54,7 @@ app.post("/menu", (req, res) => {
     gather.say(currentQuestion.q);
   } else {
     twiml.say("Invalid choice. Press 1 to start a question.");
-    twiml.redirect(`${BASE_URL}/voice`);
+    twiml.redirect(`${BASE_URL}/menu`);
   }
 
   sendTwiML(res, twiml);
@@ -73,7 +73,7 @@ app.post("/answer", (req, res) => {
     const correct = answer === currentQuestion.correct;
     twiml.say(correct ? "Correct!" : "Incorrect.");
     twiml.say("Press 1 to try another question.");
-    twiml.redirect(`${BASE_URL}/voice`);
+    twiml.redirect(`${BASE_URL}/menu`);
     currentQuestion = null;
   }
 
@@ -82,14 +82,14 @@ app.post("/answer", (req, res) => {
 
 
 app.use((err, req, res, next) => {
-  console.error("⚠️ Server error:", err);
+  console.error(" Server error:", err);
   res.status(500).send("Internal Server Error");
 });
 
 
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`🎙️ Trivia bot running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`Trivia bot running on port ${PORT}`));
 }
 
 module.exports = { app };
